@@ -11,12 +11,17 @@
 import admin from "firebase-admin";
 
 // Safely check if any apps are initialized yet
+// Safely check if any apps are initialized yet
 if (!admin.apps || admin.apps.length === 0) {
-  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+  // Clean up any rogue newline issues or invisible spaces before parsing
+  const rawKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY.trim();
+  const serviceAccount = JSON.parse(rawKey);
+  
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
 }
+
 
 
 export const db = admin.firestore();
