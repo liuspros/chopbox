@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+/* Class-based dark mode: toggled via <html class="dark">, not OS preference */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Dark-mode palette (ChopBox original) */
+  --color-ink: #0F0D0C;
+  --color-panel: #1A1613;
+  --color-cream: #FBF3E7;
+  --color-creamDim: #D9CDBE;
+
+  /* Light-mode palette (default) */
+  --color-paper: #FFFFFF;
+  --color-mist: #F5F4F2;
+  --color-line: #ECEAE7;
+  --color-graphite: #1C1917;
+  --color-graphiteDim: #8A8378;
+
+  /* Brand accent — same in both modes */
+  --color-rust: #E8491D;
+  --color-rustDark: #C23A14;
+  --color-amber: #F4A623;
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Manrope", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-paper text-graphite font-body transition-colors duration-200;
+  }
+  .dark body {
+    @apply bg-ink text-cream;
+  }
+}
+
+@layer components {
+  /* Card: soft-shadow rounded card, light by default, dark-aware */
+  .card {
+    @apply bg-paper border border-line rounded-2xl shadow-sm;
+  }
+  .dark .card {
+    @apply bg-panel border-white/10 shadow-none;
+  }
+
+  .chip {
+    @apply bg-mist text-graphiteDim border border-line;
+  }
+  .dark .chip {
+    @apply bg-panel text-creamDim border-white/10;
+  }
+
+  .btn-primary {
+    @apply bg-rust text-white font-semibold px-6 py-3 rounded-full transition-colors;
+  }
+  .btn-primary:hover {
+    @apply bg-rustDark;
+  }
+  .btn-secondary {
+    @apply bg-transparent border border-line text-graphite font-medium px-6 py-3 rounded-full transition-colors;
+  }
+  .dark .btn-secondary {
+    @apply border-white/20 text-cream;
+  }
+
+  .input-field {
+    @apply bg-mist border border-line rounded-xl px-4 py-3 text-graphite placeholder:text-graphiteDim text-sm;
+  }
+  .dark .input-field {
+    @apply bg-panel border-white/10 text-cream placeholder:text-creamDim/60;
+  }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}

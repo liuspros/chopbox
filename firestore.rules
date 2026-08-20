@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Wallets: a user can READ their own balance and transaction history,
+    // but can NEVER write to it directly. Only Cloud Functions (using the
+    // Admin SDK, which bypasses these rules) may change a balance —
+    // see functions/index.js. This is what stops someone from opening
+    // devtools and setting their own wallet balance to ₦1,000,000.
+    match /wallets/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if false;
+
+      match /transactions/{transactionId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if false;
+      }
+    }
+
+    // Wallet top-up records: internal bookkeeping between initiateWalletTopup
+    // and the webhook. No client access needed at all.
+    match /walletTopups/{topupId} {
+      allow read, write: if false;
+    }
+
+    // Orders: a user can read their own orders (for the Orders history
+    // screen), but order creation and status changes only ever happen
+    // through Cloud Functions — never a direct client write. This stops
+    // someone from creating a fake "paid" order for ₦0.
+    match /orders/{orderId} {
+      allow read: if request.auth != null && request.auth.uid == resource.data.uid;
+      allow write: if false;
+    }
+  }
+}
