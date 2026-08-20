@@ -1,22 +1,29 @@
 // Shared Firebase Admin setup for all API routes.
-import admin from "firebase-admin";
+import { getApps, initializeApp, cert } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
 
-// Modern modular destructuring from the firebase-admin package
-const { apps, initializeApp, credential } = admin;
+const apps = getApps();
 
 // Safely check if any apps are initialized yet
-if (!apps || apps.length === 0) {
+if (apps.length === 0) {
   const rawKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY.trim();
   const serviceAccount = JSON.parse(rawKey);
   
   initializeApp({
-    credential: credential.cert(serviceAccount),
+    credential: cert(serviceAccount),
   });
 }
 
-export const db = admin.firestore();
-export const auth = admin.auth();
-export const FieldValue = admin.firestore.FieldValue;
+// Export the expected db, auth, and FieldValue services
+export const db = getFirestore();
+export const auth = getAuth();
+export const FieldValue = {
+  increment: (n) => admin.firestore.FieldValue.increment(n),
+  arrayUnion: (...args) => admin.firestore.FieldValue.arrayUnion(...args),
+  arrayRemove: (...args) => admin.firestore.FieldValue.arrayRemove(...args),
+  serverTimestamp: () => admin.firestore.FieldValue.serverTimestamp()
+};
 
 // Every protected API route calls this first to verify user tokens
 export async function requireAuth(req) {
