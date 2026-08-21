@@ -7,19 +7,29 @@
 // minified to one line, stored as a single environment variable.
 // Get it from: Firebase Console > Project Settings > Service Accounts >
 // Generate New Private Key. Never commit the downloaded JSON file.
+//
+// NOTE: this uses firebase-admin's modular imports (firebase-admin/app,
+// /firestore, /auth) rather than `import admin from "firebase-admin"`.
+// The old default-import style breaks in newer firebase-admin versions
+// (v14+) under Node's ESM ("type": "module") — `admin` comes back without
+// its usual properties (e.g. admin.apps is undefined), causing every
+// route to crash before it even runs. The modular imports are the
+// officially documented fix and avoid that CJS/ESM interop issue entirely.
 
-import admin from "firebase-admin";
+import { initializeApp, getApps, cert } from "firebase-admin/app";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
 
-if (!admin.apps.length) {
+if (!getApps().length) {
   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+  initializeApp({
+    credential: cert(serviceAccount),
   });
 }
 
-export const db = admin.firestore();
-export const auth = admin.auth();
-export const FieldValue = admin.firestore.FieldValue;
+export const db = getFirestore();
+export const auth = getAuth();
+export { FieldValue };
 
 // Every protected API route calls this first. It reads the Firebase ID
 // token the frontend attached as "Authorization: Bearer <token>" and
