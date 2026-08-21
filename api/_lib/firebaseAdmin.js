@@ -21,7 +21,19 @@ import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
 
 if (!getApps().length) {
-  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+  const envKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+
+  if (!envKey) {
+    throw new Error("FIREBASE_SERVICE_ACCOUNT_KEY environment variable is missing.");
+  }
+
+  // Handle stringified JSON or double-escaped newlines
+  const serviceAccount = typeof envKey === "string" ? JSON.parse(envKey) : envKey;
+
+  if (serviceAccount.private_key) {
+    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, "\n");
+  }
+
   initializeApp({
     credential: cert(serviceAccount),
   });
