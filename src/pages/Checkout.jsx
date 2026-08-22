@@ -14,7 +14,9 @@ export default function Checkout() {
   const [error, setError] = useState("");
 
   const pickupLocations = ["Ogbomosho", "Ilorin", "Lagos Mainland", "Lagos Island"];
-  const [location, setLocation] = useState(pickupLocations[0]);
+  const [location, setLocation] = useState(
+    () => localStorage.getItem("chopbox-default-location") || pickupLocations[0]
+  );
 
   async function handlePay() {
     setLoading(true);

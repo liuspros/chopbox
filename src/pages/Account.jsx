@@ -1,8 +1,14 @@
 import { signOut } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Header from "../components/Header";
 import { auth } from "../lib/firebase";
 import { useAuth } from "../context/AuthContext";
+
+const menuLinks = [
+  { label: "Profile Details", to: "/account/profile" },
+  { label: "Saved Pickup Locations", to: "/account/locations" },
+  { label: "Help & Support", to: "/account/help" },
+];
 
 export default function Account() {
   const { user } = useAuth();
@@ -25,13 +31,13 @@ export default function Account() {
         </div>
 
         <div className="flex flex-col divide-y divide-line dark:divide-white/10 border-t border-b border-line dark:border-white/10">
-          {["Profile Details", "Saved Pickup Locations", "Help & Support"].map((label) => (
-            <button key={label} className="flex items-center justify-between py-4 text-left">
+          {menuLinks.map(({ label, to }) => (
+            <Link key={label} to={to} className="flex items-center justify-between py-4 text-left">
               <span className="text-graphite dark:text-cream text-sm font-medium">{label}</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-graphiteDim dark:text-creamDim">
                 <path d="m9 6 6 6-6 6" />
               </svg>
-            </button>
+            </Link>
           ))}
           <button
             onClick={() => signOut(auth).then(() => navigate("/"))}

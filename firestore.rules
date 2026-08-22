@@ -31,5 +31,13 @@ service cloud.firestore {
       allow read: if request.auth != null && request.auth.uid == resource.data.uid;
       allow write: if false;
     }
+
+    // Users: profile info only (name is stored in Firebase Auth directly,
+    // this is for extras like phone number). Unlike wallets/orders, this
+    // is safe for a user to write directly themselves — there's no money
+    // or trust decision riding on it, just their own contact details.
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
   }
 }

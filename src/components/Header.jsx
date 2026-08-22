@@ -37,16 +37,23 @@ export default function Header({ title, showBack }) {
     );
   }
 
-  // Home header: pickup location + notification/cart, matching the reference layout
+  // Home header: logo + pickup location + notification/cart
   return (
     <header className="px-5 pt-5 pb-2 flex items-center justify-between">
-      <div className="flex items-center gap-2 text-graphite dark:text-cream">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M20 8v13H4V8M2 3h20l-3 5H5zM10 13h4v8h-4z" />
+      <div className="flex items-center gap-3 text-graphite dark:text-cream">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
+          <path d="M12 2 21 7v10l-9 5-9-5V7z" fill="#E8491D" />
+          <path d="M12 2 21 7l-9 5-9-5z" fill="#F4A623" />
         </svg>
-        <div>
-          <p className="text-[11px] text-graphiteDim dark:text-creamDim leading-none">Pickup from</p>
-          <p className="text-sm font-semibold leading-tight">Ogbomosho</p>
+        <div className="w-px h-8 bg-line dark:bg-white/10" />
+        <div className="flex items-center gap-2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 8v13H4V8M2 3h20l-3 5H5zM10 13h4v8h-4z" />
+          </svg>
+          <div>
+            <p className="text-[11px] text-graphiteDim dark:text-creamDim leading-none">Pickup from</p>
+            <p className="text-sm font-semibold leading-tight">Ogbomosho</p>
+          </div>
         </div>
       </div>
       <div className="flex items-center gap-3">
